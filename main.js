@@ -39,12 +39,60 @@ async function getRamdomCats(){
 async function getFavouritesCats(){
     let response = await fetch(API_URL_FAVOURITES)
     let data = await response.json();
+    
+    console.log("Favoritos");
     console.log(data);
+    
     if (response.status != 200){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
         error.style.display = "block";
     } else {
-      
+        data.forEach(gato => {
+            
+            const tarjetaGato = document.getElementById("tarjetaGato");
+            
+            const divCard = document.createElement("div");
+            divCard.classList.add("card shadow-sm");
+
+            const divCardBody = document.createElement("divCardBody");
+            divCardBody.classList.add("card-body");
+
+            const p = document.createElement("p");
+            p.classList.add("card-text");
+
+            const divButtons = document.createElement("div");
+            divButtons.classList.add("d-flex justify-content-between align-items-center");
+
+            const divButtonsGroup = document.createElement("div");
+            divButtonsGroup.classList.add("btn-group");
+
+            const smallText = document.createElement("small");
+            smallText.classList.add("text-muted");
+
+            const img = document.createElement("img");
+            const btn = document.createElement("button");
+            btn.classList.add("btn btn-sm btn-outline-secondary");
+            const btnText = document.createTextNode("Quitar");
+    
+            btn.appendChild(btnText);
+            img.src = gato.image.url;
+            img.height = '200';
+            img.width = '100%';
+            img.alt = 'Gato favorito';
+            
+            divCard.appendChild(img);
+
+            divCardBody.appendChild(p);
+            divCardBody.appendChild(divButtons);
+
+            divButtonsGroup.appendChild(btn);
+            divButtons.appendChild(smallText);
+
+            divCardBody.appendChild(divButtonsGroup);
+           
+            tarjetaGato.appendChild(divCard);
+
+          });
     }
 }
 
@@ -60,11 +108,13 @@ async function saveFavouriteCat(){
     });
 
     let data = await response.json();
+    
     console.log(data);
     if (response.status != 200){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
         error.style.display = "block";
     } else {
+     
       
     }
 }
