@@ -1,31 +1,27 @@
 const API_KEY = "94509196-4821-4bbd-a278-78b60d6188a6";
 const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3&api_key=" + API_KEY;
-const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?limit=3&api_key=" + API_KEY;
+const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?api_key=" + API_KEY;
+const API_URL_FAVOURITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=` + API_KEY;
 
 const btnReloadCats = document.getElementById("btnReloadCats");
 const img1 = document.getElementById("img1");
 const img2 = document.getElementById("img2");
 const img3 = document.getElementById("img3");
 
-const btnFavorito1 = document.getElementById("btnFavorito1");
-const btnFavorito2 = document.getElementById("btnFavorito2");
-const btnFavorito3 = document.getElementById("btnFavorito3");
-
-
 const error = document.getElementById("error");
 error.style.display = "none";
 //const img1 = document.querySelector("img");
 
 
-getRamdomCats();
 
-btnReloadCats.addEventListener("click", getRamdomCats);
-
+btnReloadCats.addEventListener("click", getRandomCats);
 
 
-async function getRamdomCats(){
+
+async function getRandomCats(){
     let response = await fetch(API_URL_RANDOM)
     let data = await response.json();
+    console.log("Lista Random");
     console.log(data);
     if (response.status != 200){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
@@ -35,9 +31,13 @@ async function getRamdomCats(){
         img2.src = data[1].url;
         img3.src = data[2].url;
         
-        btnFavorito1.addEventListener("click", await saveFavouriteCat(data[0].id));
-        btnFavorito2.addEventListener("click", await saveFavouriteCat(data[1].id));
-        btnFavorito3.addEventListener("click", await saveFavouriteCat(data[2].id));
+        const btnFavorito1 = document.getElementById("btnFavorito1");
+        const btnFavorito2 = document.getElementById("btnFavorito2");
+        const btnFavorito3 = document.getElementById("btnFavorito3");
+
+        btnFavorito1.onclick = () => saveFavouriteCat(data[0].id);
+        btnFavorito2.onclick = () => saveFavouriteCat(data[1].id);
+        btnFavorito3.onclick = () => saveFavouriteCat(data[2].id);
     }
    
 }
@@ -45,10 +45,8 @@ async function getRamdomCats(){
 async function getFavouritesCats(){
     let response = await fetch(API_URL_FAVOURITES)
     let data = await response.json();
-    
-    console.log("Favoritos");
+    console.log("Lista Favoritos");
     console.log(data);
-    
     if (response.status != 200){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
         error.style.display = "block";
@@ -86,7 +84,7 @@ async function getFavouritesCats(){
             const btn = document.createElement("button");
             btn.classList.add("btn", "btn-sm", "btn-outline-secondary");
             const btnText = document.createTextNode("Quitar");
-    
+            btn.onclick = () => deleteFavouriteCat(gato.id);
             btn.appendChild(btnText);
             img.src = gato.image.url;
             img.height = '200';
@@ -116,7 +114,7 @@ async function getFavouritesCats(){
 }
 
 async function saveFavouriteCat(id){
-    console.log("Este es el id: " + id);
+    console.log("Se guardó el ID: " + id);
     let response = await fetch(API_URL_FAVOURITES,{
         method: "POST",
         headers:{
@@ -128,15 +126,32 @@ async function saveFavouriteCat(id){
     });
 
     let data = await response.json();
-    
-    console.log(data);
+
     if (response.status != 200){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
         error.style.display = "block";
     } else {
-     
         getFavouritesCats();
     }
 }
 
+async function deleteFavouriteCat(id){
+    console.log("Se borró el ID: " + id);
+    let response = await fetch(API_URL_FAVOURITES_DELETE(id),{
+        method: "DELETE"
+    });
+
+    let data = await response.json();
+
+    if (response.status != 200){
+        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+        error.style.display = "block";
+    } else {
+        console.log("Gato eliminado de favorito");
+        getFavouritesCats();
+    }
+
+}
+
+getRandomCats();
 getFavouritesCats();
