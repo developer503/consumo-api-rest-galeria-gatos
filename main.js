@@ -8,6 +8,8 @@ const img2 = document.getElementById("img2");
 const img3 = document.getElementById("img3");
 
 const btnFavorito1 = document.getElementById("btnFavorito1");
+const btnFavorito2 = document.getElementById("btnFavorito2");
+const btnFavorito3 = document.getElementById("btnFavorito3");
 
 
 const error = document.getElementById("error");
@@ -18,7 +20,7 @@ error.style.display = "none";
 getRamdomCats();
 
 btnReloadCats.addEventListener("click", getRamdomCats);
-btnFavorito1.addEventListener("click", saveFavouriteCat);
+
 
 
 async function getRamdomCats(){
@@ -32,6 +34,10 @@ async function getRamdomCats(){
         img1.src = data[0].url;
         img2.src = data[1].url;
         img3.src = data[2].url;
+        
+        btnFavorito1.addEventListener("click", await saveFavouriteCat(data[0].id));
+        btnFavorito2.addEventListener("click", await saveFavouriteCat(data[1].id));
+        btnFavorito3.addEventListener("click", await saveFavouriteCat(data[2].id));
     }
    
 }
@@ -49,12 +55,10 @@ async function getFavouritesCats(){
     } else {
         
         const subContenedor = document.getElementById("subContenedor");
+        subContenedor.innerHTML = "";
         subContenedor.classList.add("row", "row-cols-1", "row-cols-sm-2", "row-cols-md-3", "g-3");
         data.forEach(gato => {
             
-           
-          
-
             const tarjetaGato = document.createElement("div");
             tarjetaGato.classList.add("col");
 
@@ -104,20 +108,22 @@ async function getFavouritesCats(){
             tarjetaGato.appendChild(divCard);
             
             subContenedor.appendChild(tarjetaGato);
-            console.log(subContenedor.innerHTML);
+           
 
           });
+         
     }
 }
 
-async function saveFavouriteCat(){
+async function saveFavouriteCat(id){
+    console.log("Este es el id: " + id);
     let response = await fetch(API_URL_FAVOURITES,{
         method: "POST",
         headers:{
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            image_id: "2"
+            image_id: id
         }),
     });
 
@@ -129,7 +135,7 @@ async function saveFavouriteCat(){
         error.style.display = "block";
     } else {
      
-      
+        getFavouritesCats();
     }
 }
 
