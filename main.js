@@ -47,50 +47,64 @@ async function getFavouritesCats(){
         error.innerHTML = "Se generó un error " + response.status + " " + data.message;
         error.style.display = "block";
     } else {
+        
+        const subContenedor = document.getElementById("subContenedor");
+        subContenedor.classList.add("row", "row-cols-1", "row-cols-sm-2", "row-cols-md-3", "g-3");
         data.forEach(gato => {
             
-            const tarjetaGato = document.getElementById("tarjetaGato");
-            
-            const divCard = document.createElement("div");
-            divCard.classList.add("card shadow-sm");
+           
+          
 
-            const divCardBody = document.createElement("divCardBody");
+            const tarjetaGato = document.createElement("div");
+            tarjetaGato.classList.add("col");
+
+            const divCard = document.createElement("div");
+            divCard.classList.add("card","shadow-sm");
+
+            const divCardBody = document.createElement("div");
             divCardBody.classList.add("card-body");
 
             const p = document.createElement("p");
             p.classList.add("card-text");
 
-            const divButtons = document.createElement("div");
-            divButtons.classList.add("d-flex justify-content-between align-items-center");
+            const divButtonsElements = document.createElement("div");
+            divButtonsElements.classList.add("d-flex", "justify-content-between", "align-items-center");
 
             const divButtonsGroup = document.createElement("div");
             divButtonsGroup.classList.add("btn-group");
+            
 
             const smallText = document.createElement("small");
             smallText.classList.add("text-muted");
 
             const img = document.createElement("img");
+            
             const btn = document.createElement("button");
-            btn.classList.add("btn btn-sm btn-outline-secondary");
+            btn.classList.add("btn", "btn-sm", "btn-outline-secondary");
             const btnText = document.createTextNode("Quitar");
     
             btn.appendChild(btnText);
             img.src = gato.image.url;
             img.height = '200';
-            img.width = '100%';
+            img.style.width = '100%';
             img.alt = 'Gato favorito';
             
             divCard.appendChild(img);
+            divCard.appendChild(divCardBody);
 
             divCardBody.appendChild(p);
-            divCardBody.appendChild(divButtons);
+            divCardBody.appendChild(divButtonsElements);
 
             divButtonsGroup.appendChild(btn);
-            divButtons.appendChild(smallText);
+            divButtonsElements.appendChild(divButtonsGroup);
 
-            divCardBody.appendChild(divButtonsGroup);
-           
+            divButtonsElements.appendChild(divButtonsGroup);
+            divButtonsElements.appendChild(smallText);
+
             tarjetaGato.appendChild(divCard);
+            
+            subContenedor.appendChild(tarjetaGato);
+            console.log(subContenedor.innerHTML);
 
           });
     }
