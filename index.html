@@ -50,14 +50,12 @@
         </section>
                   
         <div class="bg-light p-3 rounded text-center">
-            
-        
                 <input type="button" id="btnReloadCats" class="btn btn-primary my-2" value="Cargar otros gatos">
-              
+                <input type="button" id="btnOpenModal" class="btn btn-success my-2" value="Subir fotografía" data-bs-toggle="modal" data-bs-target="#exampleModal">
           </div>
-          <div class="alert alert-danger" role="alert" id="error">
-            
-          </div>
+          
+      <div class="alert alert-danger" role="alert" id="error"></div>
+
         <div class="album py-5 bg-light">
           <div class="container">
       
@@ -107,15 +105,17 @@
             </div>
           </div>
         </div>
+      
+      
         <section class="py-1 text-center container">
           <div class="row py-lg-4">
             <div class="col-lg-6 col-md-8 mx-auto">
               <h1 class="fw-light">Gatos favoritos</h1>
               <p class="lead text-muted">Mis gatos favoritos</p>
-            
             </div>
           </div>
         </section>
+
         <div class="album py-5 bg-light">
           <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="subContenedor">
@@ -124,7 +124,28 @@
           </div>
         </div>
       </main>
-      
+     
+      <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="frmFoto">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Subir foto de gatito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <input class="form-control form-control-lg" id="filePicCat" type="file" name="file">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="UploadPicCat();">Guardar</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
       <footer class="text-muted py-5">
         <div class="container">
           <p class="float-end mb-1">
@@ -138,5 +159,7 @@
     
 </body>
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
 <script src="main.js"></script>
 </html>
