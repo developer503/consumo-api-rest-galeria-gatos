@@ -1,5 +1,5 @@
 const api = axios.create ({
-    baseURL: 'https://api.thecatapi.com/v1/'
+    baseURL: 'https://api.thecatapi.com/v1'
 });
 api.defaults.headers.common['x-api-key'] = '94509196-4821-4bbd-a278-78b60d6188a6';
 
@@ -137,23 +137,12 @@ async function getFavouritesCats(){
 }
 
 async function saveFavouriteCat(id){
+   const { data, status } = await api.post('/favourites', {
+    image_id: id
+   });
    
-    /* console.log("Se guardó el ID: " + id);
-    let response = await fetch(API_URL_FAVOURITES,{
-        method: "POST",
-        headers:{
-            "Content-Type": "application/json",
-            'x-api-key': API_KEY
-        },
-        body: JSON.stringify({
-            image_id: id
-        }),
-    });
-
-    let data = await response.json();*/
-
-    if (response.status != 200){
-        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+    if (status != 200){
+        error.innerHTML = "Se generó un error " + status + " " + data.message;
         error.style.display = "block";
     } else {
         getFavouritesCats();
@@ -216,14 +205,7 @@ async function deleteUploadCat(imageId, id){
     console.log("Gato eliminado");
     deleteFavouriteCat(id);
     getFavouritesCats();
-   // let data = await response.json();
-    //console.log(data);
-   /* if (response.status != 201){
-        error.innerHTML = "Se generó un error " + response.status;
-        error.style.display = "block";
-    } else {
-      
-    }*/
+  
 }
 
 getRandomCats();
