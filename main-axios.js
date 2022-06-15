@@ -4,13 +4,6 @@ const api = axios.create ({
 api.defaults.headers.common['x-api-key'] = '94509196-4821-4bbd-a278-78b60d6188a6';
 
 
-const API_KEY = "94509196-4821-4bbd-a278-78b60d6188a6";
-const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=3";
-const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites";
-const API_URL_FAVOURITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}`;
-const API_UPLOAD_PIC = "https://api.thecatapi.com/v1/images/upload";
-const API_URL_PIC_UPLOAD_DELETE = (id) => `https://api.thecatapi.com/v1/images/${id}`;
-
 const btnReloadCats = document.getElementById("btnReloadCats");
 const img1 = document.getElementById("img1");
 const img2 = document.getElementById("img2");
@@ -18,22 +11,22 @@ const img3 = document.getElementById("img3");
 
 const error = document.getElementById("error");
 error.style.display = "none";
-//const img1 = document.querySelector("img");
 
 var myModal = document.getElementById('exampleModal')
 
 
 btnReloadCats.addEventListener("click", getRandomCats);
 
-
-
 async function getRandomCats(){
-    let response = await fetch(API_URL_RANDOM)
-    let data = await response.json();
-    console.log("Lista Random");
-    console.log(data);
-    if (response.status != 200){
-        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+    
+    const { data, status } = await api.get('/images/search', {
+        params: {
+            limit: 3
+        }
+    });
+   
+    if (status != 200){
+        error.innerHTML = "Se generó un error " + status + " " + data.message;
         error.style.display = "block";
     } else {
         img1.src = data[0].url;
@@ -52,18 +45,11 @@ async function getRandomCats(){
 }
 
 async function getFavouritesCats(){
-    let response = await fetch(API_URL_FAVOURITES, {
-        method: "GET",
-        headers: {
-            'x-api-key': API_KEY
-        }
-    });
+    
+    const { data, status } = await api.get('/favourites');
 
-    let data = await response.json();
-    console.log("Lista Favoritos");
-    console.log(data);
-    if (response.status != 200){
-        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+    if (status != 200){
+        error.innerHTML = "Se generó un error " + status + " " + data.message;
         error.style.display = "block";
     } else {
         
@@ -150,21 +136,13 @@ async function saveFavouriteCat(id){
 }
 
 async function deleteFavouriteCat(id){
-    console.log("Se borró el ID: " + id);
-    let response = await fetch(API_URL_FAVOURITES_DELETE(id),{
-        method: "DELETE",
-        headers: {
-            'x-api-key': API_KEY
-        }
-    });
-
-    let data = await response.json();
-
-    if (response.status != 200){
-        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+    
+    const { data, status } = await api.delete('/favourites/' + id);
+  
+    if (status != 200){
+        error.innerHTML = "Se generó un error " + status + " " + data.message;
         error.style.display = "block";
     } else {
-        console.log("Gato eliminado de favorito");
         getFavouritesCats();
     }
 }
@@ -172,37 +150,26 @@ async function deleteFavouriteCat(id){
 async function UploadPicCat() {
     const form = document.getElementById("frmFoto");
     const formData = new FormData(form);
-    console.log(formData.get('file'));
     
-    let response = await fetch(API_UPLOAD_PIC,{
-        method: "POST",
-        headers:{
-            //"Content-Type": "multipart/form-data",
-            'x-api-key': API_KEY
-        },
-        body: formData
-    });
-    let data = await response.json();
-    if (response.status != 201){
-        error.innerHTML = "Se generó un error " + response.status + " " + data.message;
+    const { data, status } = await api.post('/images/upload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+       });
+
+    if (status != 201){
+        error.innerHTML = "Se generó un error " + status + " " + data.message;
         error.style.display = "block";
     } else {
-        console.log("Foto subida");
         saveFavouriteCat(data.id);
         $("#exampleModal").modal('hide');
     }
 }
 
 async function deleteUploadCat(imageId, id){
-    console.log("Se pasó el ID: " + imageId);
-    let response = await fetch(API_URL_PIC_UPLOAD_DELETE(imageId),{
-        method: "DELETE",
-        headers: {
-            'x-api-key': API_KEY
-        }
-    });
-
-    console.log("Gato eliminado");
+  
+    const { data, status } = await api.delete('/images/' + imageId);
+    console.log(status);
     deleteFavouriteCat(id);
     getFavouritesCats();
   
